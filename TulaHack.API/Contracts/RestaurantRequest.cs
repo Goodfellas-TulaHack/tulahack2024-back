@@ -6,7 +6,7 @@
         string Description,
         Guid UserId,
         string Address,
-        string Kitchen,
+        List<Guid> Kitchen,
         List<Guid> MenuIds,
         List<string> Photos,
         string StartWorkTime,

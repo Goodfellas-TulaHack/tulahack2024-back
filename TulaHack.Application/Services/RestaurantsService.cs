@@ -38,10 +38,15 @@ namespace TulaHack.Application.Services
             return await _usersRepository.Create(restaurant);
         }
 
-        public async Task<Guid?> UpdateRestaurant(Guid id, string title, string subtitle, string description, string address, string kitchen,
+        public async Task<Guid?> UpdateRestaurant(Guid id, string title, string subtitle, string description, string address, List<Guid> kitchen,
             List<Guid> menuIds, List<string> photos, string startWorkTime, string endWorkTime)
         {
             return await _usersRepository.Update(id, title, subtitle, description, address, kitchen, menuIds, photos, startWorkTime, endWorkTime);
+        }
+
+        public async Task UpdateRestaurant(object id, object title, object subtitle, object description, object address, object kitchen, object menuIds, object photos, object startWorkTime, object endWorkTime)
+        {
+            throw new NotImplementedException();
         }
     }
 }

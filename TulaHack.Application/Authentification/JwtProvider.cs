@@ -23,7 +23,11 @@ namespace TulaHack.Application.Authentification
         {
             Claim[] claims = [new("UserId", user.Id.ToString()),
                 new("Role", user.Role.ToString()),
-                new("Login", user.Login)];
+                new("Login", user.Login),
+                new("FirstName", user.Login),
+                new("LastName", user.Login),
+                new("MiddleName", user.Login),
+                new("Phone", user.Login)];
 
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("JwtOptions:SecretKey").Value)),

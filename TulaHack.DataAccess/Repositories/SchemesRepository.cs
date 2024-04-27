@@ -47,8 +47,9 @@ namespace TulaHack.DataAccess.Repositories
                     schemeEntity.Restaurant.StartWorkTime,
                     schemeEntity.Restaurant.EndWorkTime,
                     schemeEntity.Restaurant.SchemeId
-                    )
-                );
+                    ).Value,
+                    schemeEntity.TableIds
+                ).Value;
         }
     }
 }

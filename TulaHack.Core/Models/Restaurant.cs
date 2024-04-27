@@ -13,7 +13,7 @@ namespace TulaHack.Core.Models
         public Guid UserId { get; }
         public User? User { get; } = null;
         public string Address { get; } = string.Empty;
-        public string Kitchen { get; } = string.Empty;
+        public List<Guid> Kitchen { get; } = [];
         public List<Guid> MenuIds { get; } = [];
         //public List<Menu> Menu { get; }
         public List<string> Photos { get; } = [];
@@ -25,7 +25,7 @@ namespace TulaHack.Core.Models
 
 
         private Restaurant(Guid id, string title, string subtitle, string description, Guid userId, User? user,
-            string address, string kitchen, List<Guid> menuIds, List<string> photos, float raiting,
+            string address, List<Guid> kitchen, List<Guid> menuIds, List<string> photos, float raiting,
             string startWorkTime, string endWorkTime, Guid schemeId)
         {
             Id = id;
@@ -45,7 +45,7 @@ namespace TulaHack.Core.Models
         }
 
         public static Result<Restaurant> Create(Guid id, string title, string subtitle, string description, Guid userId, User? user,
-            string address, string kitchen, List<Guid> menuIds, List<string> photos, float raiting,
+            string address, List<Guid> kitchen, List<Guid> menuIds, List<string> photos, float raiting,
             string startWorkTime, string endWorkTime, Guid schemeId)
         {
             if (string.IsNullOrWhiteSpace(title) || title.Length > MAX_STRING_LENGTH)
@@ -63,10 +63,10 @@ namespace TulaHack.Core.Models
                 return Result.Failure<Restaurant>($"'{nameof(address)}' connot be empty or > {MAX_STRING_LENGTH}");
             }
 
-            if (string.IsNullOrWhiteSpace(kitchen) || kitchen.Length > MAX_STRING_LENGTH)
-            {
-                return Result.Failure<Restaurant>($"'{nameof(kitchen)}' connot be empty or > {MAX_STRING_LENGTH}");
-            }
+            //if (string.IsNullOrWhiteSpace(kitchen) || kitchen.Length > MAX_STRING_LENGTH)
+            //{
+            //    return Result.Failure<Restaurant>($"'{nameof(kitchen)}' connot be empty or > {MAX_STRING_LENGTH}");
+            //}
 
             if (raiting < 0f || raiting > 5f)
             {

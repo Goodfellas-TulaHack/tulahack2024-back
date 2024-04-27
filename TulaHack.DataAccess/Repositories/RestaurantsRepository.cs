@@ -135,11 +135,6 @@ namespace TulaHack.DataAccess.Repositories
                 query = query.Where(r => r.Title.ToLower().Contains(title));
             }
 
-            if (!string.IsNullOrWhiteSpace(kitchen))
-            {
-                query = query.Where(r => r.Kitchen.ToLower().Contains(kitchen));
-            }
-
             var restaurantEntities = await query
                 .Include(r => r.User)
                 .ToListAsync();
@@ -199,7 +194,7 @@ namespace TulaHack.DataAccess.Repositories
             return restaurant.Id;
         }
 
-        public async Task<Guid?> Update(Guid id, string title, string subtitle, string description, string address, string kitchen,
+        public async Task<Guid?> Update(Guid id, string title, string subtitle, string description, string address, List<Guid> kitchen,
             List<Guid> menuIds, List<string> photos, string startWorkTime, string endWorkTime)
         {
             var restaurantEntity = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == id);
