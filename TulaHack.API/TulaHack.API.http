@@ -1,0 +1,6 @@
+@TulaHack.API_HostAddress = http://localhost:5128
+
+GET {{TulaHack.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

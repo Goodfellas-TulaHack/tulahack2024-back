@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TulaHack.API", "TulaHack.API\TulaHack.API.csproj", "{974A1441-DAFD-489B-93A3-BD70FF4D8CB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TulaHack.DataAccess", "TulaHack.DataAccess\TulaHack.DataAccess.csproj", "{8676A140-1E85-4DCF-84FC-C5BCC88FB8E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TulaHack.Core", "TulaHack.Core\TulaHack.Core.csproj", "{550ADE21-2A21-4B92-9793-6BB7C8306881}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TulaHack.Application", "TulaHack.Application\TulaHack.Application.csproj", "{AA177A2E-F4C9-4284-8606-0DB0B9018810}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{974A1441-DAFD-489B-93A3-BD70FF4D8CB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{974A1441-DAFD-489B-93A3-BD70FF4D8CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{974A1441-DAFD-489B-93A3-BD70FF4D8CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{974A1441-DAFD-489B-93A3-BD70FF4D8CB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8676A140-1E85-4DCF-84FC-C5BCC88FB8E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8676A140-1E85-4DCF-84FC-C5BCC88FB8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8676A140-1E85-4DCF-84FC-C5BCC88FB8E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8676A140-1E85-4DCF-84FC-C5BCC88FB8E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{550ADE21-2A21-4B92-9793-6BB7C8306881}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{550ADE21-2A21-4B92-9793-6BB7C8306881}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{550ADE21-2A21-4B92-9793-6BB7C8306881}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{550ADE21-2A21-4B92-9793-6BB7C8306881}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA177A2E-F4C9-4284-8606-0DB0B9018810}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA177A2E-F4C9-4284-8606-0DB0B9018810}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA177A2E-F4C9-4284-8606-0DB0B9018810}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA177A2E-F4C9-4284-8606-0DB0B9018810}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9482273D-B9C8-4697-B6BD-BDB1354A534B}
+	EndGlobalSection
+EndGlobal
