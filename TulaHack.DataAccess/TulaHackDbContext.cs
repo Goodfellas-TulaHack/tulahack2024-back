@@ -13,6 +13,9 @@ namespace TulaHack.DataAccess
         public DbSet<BookingEntity> Bookings { get; set; }
         public DbSet<SchemeEntity> Schemes { get; set; }
         public DbSet<TableEntity> Tables { get; set; }
+        public DbSet<KitchenEntity> Kitchens { get; set; }
+        public DbSet<MenuEntity> Menus { get; set; }
+        public DbSet<NotificationEntity> Notifications { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,6 +25,9 @@ namespace TulaHack.DataAccess
             modelBuilder.ApplyConfiguration(new BookingConfiguration());
             modelBuilder.ApplyConfiguration(new SchemeConfiguration());
             modelBuilder.ApplyConfiguration(new TableConfiguration());
+            modelBuilder.ApplyConfiguration(new KitchenConfiguration());
+            modelBuilder.ApplyConfiguration(new MenuConfiguration());
+            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

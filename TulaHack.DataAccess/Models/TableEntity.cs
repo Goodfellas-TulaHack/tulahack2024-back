@@ -10,6 +10,11 @@
         public float Y { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
-
+        public float ScaleX { get; set; }
+        public float ScaleY { get; set; }
+        public float Rotate { get; set; }
+        public float Radius { get; set; }
+        public string Fill { get; set; }
+        public string Type { get; set; }
     }
 }

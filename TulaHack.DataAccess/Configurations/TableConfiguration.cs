@@ -16,6 +16,8 @@ namespace TulaHack.DataAccess.Configurations
             builder.Property(t => t.Y).IsRequired();
             builder.Property(t => t.Width).IsRequired();
             builder.Property(t => t.Height).IsRequired();
+            builder.Property(t => t.Type).IsRequired();
+            builder.Property(t => t.Fill).IsRequired();
         }
     }
 }

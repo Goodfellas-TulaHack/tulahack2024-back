@@ -19,6 +19,7 @@ namespace TulaHack.DataAccess.Repositories
             var restaurantEntities = await _dbContext.Restaurants
                 .AsNoTracking()
                 .Include(r => r.User)
+                .OrderBy(r => r.Title)
                 .ToListAsync();
 
             var restaurants = restaurantEntities
@@ -39,7 +40,7 @@ namespace TulaHack.DataAccess.Repositories
                         r.User.Phone
                         ).Value,
                     r.Address,
-                    r.Kitchen,
+                    r.Kitchens,
                     r.MenuIds,
                     r.Photos,
                     r.Raiting,
@@ -77,7 +78,7 @@ namespace TulaHack.DataAccess.Repositories
                         restaurantEntity.User.Phone
                         ).Value,
                     restaurantEntity.Address,
-                    restaurantEntity.Kitchen,
+                    restaurantEntity.Kitchens,
                     restaurantEntity.MenuIds,
                     restaurantEntity.Photos,
                     restaurantEntity.Raiting,
@@ -114,7 +115,7 @@ namespace TulaHack.DataAccess.Repositories
                         r.User.Phone
                         ).Value,
                     r.Address,
-                    r.Kitchen,
+                    r.Kitchens,
                     r.MenuIds,
                     r.Photos,
                     r.Raiting,
@@ -126,7 +127,7 @@ namespace TulaHack.DataAccess.Repositories
             return restaurants;
         }
 
-        public async Task<List<Restaurant>> GetByFilter(string title, string kitchen)
+        public async Task<List<Restaurant>> GetByFilter(string title, List<Guid> kitchenIds)
         {
             var query = _dbContext.Restaurants.AsNoTracking().AsQueryable();
 
@@ -135,9 +136,12 @@ namespace TulaHack.DataAccess.Repositories
                 query = query.Where(r => r.Title.ToLower().Contains(title));
             }
 
-            if (!string.IsNullOrWhiteSpace(kitchen))
+            if (kitchenIds.Count > 0)
             {
-                query = query.Where(r => r.Kitchen.ToLower().Contains(kitchen));
+                foreach (var kitcheId in kitchenIds)
+                {
+                    query = query.Where(r => r.Kitchens.Contains(kitcheId));
+                }
             }
 
             var restaurantEntities = await query
@@ -162,7 +166,7 @@ namespace TulaHack.DataAccess.Repositories
                         r.User.Phone
                         ).Value,
                     r.Address,
-                    r.Kitchen,
+                    r.Kitchens,
                     r.MenuIds,
                     r.Photos,
                     r.Raiting,
@@ -184,7 +188,7 @@ namespace TulaHack.DataAccess.Repositories
                 Description = restaurant.Description,
                 UserId = restaurant.UserId,
                 Address = restaurant.Address,
-                Kitchen = restaurant.Kitchen,
+                Kitchens = restaurant.Kitchen,
                 MenuIds = restaurant.MenuIds,
                 Photos = restaurant.Photos,
                 Raiting = restaurant.Raiting,
@@ -199,22 +203,21 @@ namespace TulaHack.DataAccess.Repositories
             return restaurant.Id;
         }
 
-        public async Task<Guid?> Update(Guid id, string title, string subtitle, string description, string address, string kitchen,
+        public async Task<Guid?> Update(Guid id, string title, string subtitle, string description, string address, List<Guid> kitchen,
             List<Guid> menuIds, List<string> photos, string startWorkTime, string endWorkTime)
         {
             var restaurantEntity = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == id);
 
             if (restaurantEntity == null) return null;
 
-            restaurantEntity.Title = title;
-            restaurantEntity.Subtitle = subtitle;
-            restaurantEntity.Description = description;
-            restaurantEntity.Address = address;
-            restaurantEntity.Kitchen = kitchen;
-            restaurantEntity.MenuIds = menuIds;
-            restaurantEntity.Photos = photos;
-            restaurantEntity.StartWorkTime = startWorkTime;
-            restaurantEntity.EndWorkTime = endWorkTime;
+            if (!string.IsNullOrEmpty(title)) restaurantEntity.Title = title;
+            if (!string.IsNullOrEmpty(subtitle)) restaurantEntity.Subtitle = subtitle;
+            if (!string.IsNullOrEmpty(description)) restaurantEntity.Description = description;
+            if (!string.IsNullOrEmpty(address)) restaurantEntity.Address = address;
+            if (menuIds.Count != 0) restaurantEntity.MenuIds = menuIds;
+            if (photos.Count != 0) restaurantEntity.Photos = photos;
+            if (!string.IsNullOrEmpty(startWorkTime)) restaurantEntity.StartWorkTime = startWorkTime;
+            if (!string.IsNullOrEmpty(endWorkTime)) restaurantEntity.EndWorkTime = endWorkTime;
 
             await _dbContext.SaveChangesAsync();
 

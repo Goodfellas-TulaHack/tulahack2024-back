@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Mvc;
 using TulaHack.API.Contracts;
 using TulaHack.Application.Services;
 using TulaHack.Core.Models;
@@ -10,10 +11,14 @@ namespace TulaHack.API.Controllers
     public class RestaurantController : ControllerBase
     {
         private readonly RestaurantsService _restaurantsService;
+        private readonly SchemesService _schemesService;
+        private readonly BookingsService _bookingsService;
 
-        public RestaurantController(RestaurantsService restaurantsService)
+        public RestaurantController(RestaurantsService restaurantsService, SchemesService schemesService, BookingsService bookingsService)
         {
             _restaurantsService = restaurantsService;
+            _schemesService = schemesService;
+            _bookingsService = bookingsService;
         }
 
         [HttpGet]
@@ -50,7 +55,45 @@ namespace TulaHack.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id=guid}")]
+        [HttpGet("{id:guid}/Table/{date}")]
+        public async Task<ActionResult<List<FreeTablesResponse>>> GetFreeTables(Guid id, string? date)
+        {
+            var restaurant = await _restaurantsService.GetById(id);
+
+            if (restaurant == null) return null;
+
+            var searchDate = (!string.IsNullOrEmpty(date)) ? DateTime.Parse(date) : new DateTime();
+            var bookings = await _bookingsService.GetBookingsByDate(restaurant.SchemeId, searchDate);
+
+            var response = new List<FreeTablesResponse>();
+
+            var slotTime = TimeOnly.Parse(restaurant.StartWorkTime);
+            var endTime = TimeOnly.Parse(restaurant.EndWorkTime);
+            while (slotTime < endTime)
+            {
+                var tableIds = new List<Guid>();
+                foreach (var booking in bookings)
+                {
+                    if (slotTime > TimeOnly.Parse(booking.StartTime) && slotTime < TimeOnly.Parse(booking.EndTime))
+                    {
+                        tableIds.Add(booking.TableId);
+                    }
+                }
+
+                response.Add(new FreeTablesResponse(
+                    tableIds,
+                    DateOnly.FromDateTime(DateTime.Now).ToString(),
+                    slotTime.ToString()
+                    )
+                );
+
+                slotTime = slotTime.AddMinutes(60);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id:guid}")]
         public async Task<ActionResult<RestaurantResponse>> GetRestaurantById(Guid id)
         {
             var restaurant = await _restaurantsService.GetById(id);
@@ -87,7 +130,7 @@ namespace TulaHack.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("User/{id=guid}")]
+        [HttpGet("User/{id:guid}")]
         public async Task<ActionResult<RestaurantResponse>> GetRestaurantByUserId(Guid id)
         {
             var restaurants = await _restaurantsService.GetByUserId(id);
@@ -123,9 +166,9 @@ namespace TulaHack.API.Controllers
         }
 
         [HttpPost("Search")]
-        public async Task<IActionResult> GetRestaurant([FromBody] RestaruantSearchRequest request)
+        public async Task<ActionResult> GetRestaurant([FromBody] RestaruantSearchRequest request)
         {
-            var restaurants = await _restaurantsService.GetByFilter(request.Title.ToLower(), request.Kitchen.ToLower());
+            var restaurants = await _restaurantsService.GetByFilter(request.title.ToLower(), request.kitchenIds);
 
             var response = restaurants
                 .Select(r => new RestaurantResponse(
@@ -161,24 +204,33 @@ namespace TulaHack.API.Controllers
         {
             var restaurant = Restaurant.Create(
                 Guid.NewGuid(),
-                request.Title,
-                request.Subtitle,
-                request.Description,
-                request.UserId,
+                request.title,
+                request.subtitle,
+                request.description,
+                request.userId,
                 null,
-                request.Address,
-                request.Kitchen,
-                request.MenuIds,
-                request.Photos,
+                request.address,
+                [],
+                [],
+                [],
                 0f,
-                request.StartWorkTime,
-                request.EndWorkTime,
-                request.SchemeId
+                request.startWorkTime,
+                request.endWorkTime,
+                Guid.NewGuid()
                 );
 
             if (restaurant.IsFailure) return BadRequest(restaurant.Error);
 
+            var scheme = Scheme.Create(
+                Guid.NewGuid(),
+                restaurant.Value.Id,
+                null,
+                []
+                );
+
+            restaurant.Value.SchemeId = scheme.Value.Id;
             await _restaurantsService.CreateRestaurant(restaurant.Value);
+            await _schemesService.CreateScheme(scheme.Value);
 
             return Ok(restaurant.Value.Id);
         }
@@ -186,39 +238,29 @@ namespace TulaHack.API.Controllers
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<Guid>> UpdateRestaurant(Guid id, [FromBody] RestaurantRequest request)
         {
-            var restaurant = Restaurant.Create(
-                Guid.NewGuid(),
-                request.Title,
-                request.Subtitle,
-                request.Description,
-                request.UserId,
-                null,
-                request.Address,
-                request.Kitchen,
-                request.MenuIds,
-                request.Photos,
-                0f,
-                request.StartWorkTime,
-                request.EndWorkTime,
-                request.SchemeId
-                );
+            var restaurant = new Restaurant();
 
-            if (restaurant.IsFailure) return BadRequest(restaurant.Error);
+            restaurant.Title = request.title;
+            restaurant.Subtitle = request.title;
+            restaurant.Description = request.description;
+            restaurant.StartWorkTime = request.startWorkTime;
+            restaurant.EndWorkTime = request.endWorkTime;
+            restaurant.Kitchen = request.kitchen;
 
             await _restaurantsService.UpdateRestaurant(
-                restaurant.Value.Id,
-                restaurant.Value.Title,
-                restaurant.Value.Subtitle,
-                restaurant.Value.Description,
-                restaurant.Value.Address,
-                restaurant.Value.Kitchen,
-                restaurant.Value.MenuIds,
-                restaurant.Value.Photos,
-                restaurant.Value.StartWorkTime,
-                restaurant.Value.EndWorkTime
+                id,
+                restaurant.Title,
+                restaurant.Subtitle,
+                restaurant.Description,
+                restaurant.Address,
+                restaurant.Kitchen,
+                restaurant.MenuIds,
+                restaurant.Photos,
+                restaurant.StartWorkTime,
+                restaurant.EndWorkTime
                 );
 
-            return Ok(restaurant.Value.Id);
+            return Ok(id);
         }
     }
 }

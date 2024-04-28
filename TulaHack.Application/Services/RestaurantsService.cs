@@ -4,7 +4,7 @@ using TulaHack.DataAccess.Repositories;
 
 namespace TulaHack.Application.Services
 {
-    public class RestaurantsService : IRestaurantsService
+    public class RestaurantsService
     {
         private readonly RestaurantsRepository _usersRepository;
 
@@ -23,9 +23,9 @@ namespace TulaHack.Application.Services
             return await _usersRepository.GetById(id);
         }
 
-        public async Task<List<Restaurant>> GetByFilter(string title, string kitchen)
+        public async Task<List<Restaurant>> GetByFilter(string title, List<Guid> kitchenIds)
         {
-            return await _usersRepository.GetByFilter(title, kitchen);
+            return await _usersRepository.GetByFilter(title, kitchenIds);
         }
 
         public async Task<List<Restaurant>> GetByUserId(Guid id)
@@ -38,7 +38,7 @@ namespace TulaHack.Application.Services
             return await _usersRepository.Create(restaurant);
         }
 
-        public async Task<Guid?> UpdateRestaurant(Guid id, string title, string subtitle, string description, string address, string kitchen,
+        public async Task<Guid?> UpdateRestaurant(Guid id, string title, string subtitle, string description, string address, List<Guid> kitchen,
             List<Guid> menuIds, List<string> photos, string startWorkTime, string endWorkTime)
         {
             return await _usersRepository.Update(id, title, subtitle, description, address, kitchen, menuIds, photos, startWorkTime, endWorkTime);

@@ -18,16 +18,21 @@ namespace TulaHack.Application.Authentification
         {
             _config = config;
         }
-
         public string GenerateToken(User user)
         {
-            Claim[] claims = [new("UserId", user.Id.ToString()),
-                new("Role", user.Role.ToString()),
-                new("Login", user.Login)];
+            Claim[] claims = [
+                new("id", user.Id.ToString()),
+                new("role", user.Role.ToString()),
+                new("login", user.Login),
+                new("firstName", user.FirstName),
+                new("lastName", user.LastName),
+                new("middleName", user.MiddleName),
+                new("phone", user.Phone)
+                ];
 
             var signingCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("JwtOptions:SecretKey").Value)),
-                SecurityAlgorithms.HmacSha256);
+                new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config.GetSection("JwtOptions:SecretKey").Value)),
+                SecurityAlgorithms.HmacSha256Signature);
 
             var token = new JwtSecurityToken(
                 claims: claims,
@@ -37,10 +42,9 @@ namespace TulaHack.Application.Authentification
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public int? ValidateToken(string token)
+        public bool ValidateToken(string token)
         {
-            if (token == null)
-                return null;
+            if (string.IsNullOrEmpty(token)) return false;
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config.GetSection("JwtOptions:SecretKey").Value);
@@ -50,19 +54,17 @@ namespace TulaHack.Application.Authentification
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateLifetime = true,
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
-                var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
-
-                return userId;
+                return true;
             }
             catch
             {
-                return null;
+                return false;
             }
         }
     }

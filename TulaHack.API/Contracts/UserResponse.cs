@@ -1,12 +1,12 @@
 ﻿namespace TulaHack.API.Contracts
 {
     public record UserResponse(
-        Guid Id,
-        string Login,
-        int Role,
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        string Phone
+        Guid id,
+        string login,
+        int role,
+        string firstName,
+        string lastName,
+        string middleName,
+        string phone
         );
 }

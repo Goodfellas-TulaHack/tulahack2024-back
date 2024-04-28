@@ -22,6 +22,7 @@ namespace TulaHack.Core.Models
         public const int MAX_STRING_LENGTH = 50;
 
 
+        public Booking() { }
         private Booking(Guid id, Guid userId, User user, Guid restaurantId, Restaurant restaurant, Guid tableId, string date, string startTime, string endTime, int personsNumber, int status)
         {
             Id = id;

@@ -12,9 +12,17 @@ namespace TulaHack.Core.Models
         public float Y { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
+        public float ScaleX { get; set; }
+        public float ScaleY { get; set; }
+        public float Rotate { get; set; }
+        public float Radius { get; set; }
+        public string Fill { get; set; }
+        public string Type { get; set; }
 
-        public Table(Guid id, Guid schemeId, Scheme? scheme, int persons, float x, float y, 
-            float width, float height)
+
+        private Table(Guid id, Guid schemeId, Scheme? scheme, int persons, float x, float y, 
+            float width, float height, float scaleX, float scaleY, float rotate, float radius,
+            string fill, string type)
         {
             Id = id;
             SchemeId = schemeId;
@@ -24,10 +32,17 @@ namespace TulaHack.Core.Models
             Y = y;
             Width = width;
             Height = height;
+            ScaleX = scaleX;
+            ScaleY = scaleY;
+            Rotate = rotate;
+            Radius = radius;
+            Fill = fill;
+            Type = type;
         }
 
         public static Result<Table> Create(Guid id, Guid schemeId, Scheme? scheme, int persons, 
-            float x, float y, float width, float height)
+            float x, float y, float width, float height, float scaleX, float scaleY, float rotate,
+            float radius, string fill, string type)
         {
             if (persons < 0)
             {
@@ -42,7 +57,13 @@ namespace TulaHack.Core.Models
                 x,
                 y,
                 width,
-                height
+                height,
+                scaleX,
+                scaleY,
+                rotate,
+                radius,
+                fill,
+                type
                 );
 
             return Result.Success(table);

@@ -1,16 +1,13 @@
 ﻿namespace TulaHack.API.Contracts
 {
     public record RestaurantRequest(
-        string Title,
-        string Subtitle,
-        string Description,
-        Guid UserId,
-        string Address,
-        string Kitchen,
-        List<Guid> MenuIds,
-        List<string> Photos,
-        string StartWorkTime,
-        string EndWorkTime,
-        Guid SchemeId
+        string title,
+        string subtitle,
+        string description,
+        Guid userId,
+        string address,
+        string startWorkTime,
+        string endWorkTime,
+        List<Guid> kitchen
         );
 }

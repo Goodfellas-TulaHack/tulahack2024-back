@@ -1,7 +1,7 @@
 ﻿namespace TulaHack.API.Contracts
 {
     public record RestaruantSearchRequest(
-        string Title,
-        string Kitchen
+        string title,
+        List<Guid> kitchenIds
         );
 }

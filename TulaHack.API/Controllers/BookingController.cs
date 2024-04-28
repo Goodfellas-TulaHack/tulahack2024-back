@@ -8,14 +8,39 @@ namespace TulaHack.API.Controllers
     [Route("[controller]")]
     public class BookingController : ControllerBase
     {
-        private readonly BookingService _bookingService;
+        private readonly BookingsService _bookingService;
 
-        public BookingController(BookingService bookingService)
+        public BookingController(BookingsService bookingService)
         {
             _bookingService = bookingService;
         }
 
-        [HttpGet("{id=guid}")]
+        [HttpGet("Active/{id:guid}")]
+        public async Task<ActionResult<BookingResponse?>> GetActiveUserBooking(Guid id)
+        {
+            var booking = await _bookingService.GetUserActiveBooking(id);
+
+            if (booking == null) return Ok(null);
+
+            var response = new BookingResponse(
+                booking.Id,
+                booking.UserId,
+                null,
+                booking.RestaurantId,
+                null,
+                booking.TableId,
+                booking.Date,
+                booking.StartTime,
+                booking.EndTime,
+                booking.PersonsNumber,
+                booking.Status,
+                true
+                );
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id:guid}")]
         public async Task<ActionResult<BookingResponse>> GetBooking(Guid id)
         {
             var booking = await _bookingService.GetBooking(id);
@@ -63,14 +88,14 @@ namespace TulaHack.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("Restaurant/{id=guid}")]
-        public async Task<ActionResult<BookingResponse>> GetBookingsByRestaurantId(Guid id)
+        [HttpGet("Restaurant/{id:guid}")]
+        public async Task<ActionResult<BookingResponse?>> GetBookingsByRestaurantId(Guid id)
         {
             var bookings = await _bookingService.GetBookingsByRestaurantId(id);
 
             var response = new List<BookingResponse>();
             var slotTime = TimeOnly.Parse(bookings[0].Restaurant.StartWorkTime);
-            var i = 0;
+
             while (slotTime < TimeOnly.Parse(bookings[0].Restaurant.EndWorkTime))
             {
                 var isReserved = false;
@@ -153,15 +178,15 @@ namespace TulaHack.API.Controllers
         {
             var booking = Core.Models.Booking.Create(
                 Guid.NewGuid(),
-                request.UserId,
+                request.userId,
                 null,
-                request.RestaurantId,
+                request.restaurantId,
                 null,
-                request.TableId,
-                request.Date,
-                request.StartTime,
-                request.EndTime,
-                request.PersonsNumber,
+                request.tableId,
+                request.date,
+                request.startTime,
+                request.endTime,
+                request.personsNumber,
                 0
                 );
 
@@ -187,15 +212,15 @@ namespace TulaHack.API.Controllers
         {
             var booking = Core.Models.Booking.Create(
                 id,
-                request.UserId,
+                request.userId,
                 null,
-                request.RestaurantId,
+                request.restaurantId,
                 null,
-                request.TableId,
-                request.Date,
-                request.StartTime,
-                request.EndTime,
-                request.PersonsNumber,
+                request.tableId,
+                request.date,
+                request.startTime,
+                request.endTime,
+                request.personsNumber,
                 request.status
                 );
 
@@ -204,6 +229,12 @@ namespace TulaHack.API.Controllers
                 booking.Value.Status);
 
             return Ok(booking.Value.Id);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult<Guid>> DeleteBooking(Guid id)
+        {
+            return Ok(await _bookingService.DeleteBooking(id));
         }
     }
 }

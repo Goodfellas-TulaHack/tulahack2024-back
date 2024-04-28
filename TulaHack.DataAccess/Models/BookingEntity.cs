@@ -1,6 +1,4 @@
-﻿using TulaHack.Core.Models;
-
-namespace TulaHack.DataAccess.Models
+﻿namespace TulaHack.DataAccess.Models
 {
     public class BookingEntity
     {

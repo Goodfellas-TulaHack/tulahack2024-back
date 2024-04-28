@@ -33,20 +33,10 @@ namespace TulaHack.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(MAX_STRING_LENGTH);
 
-            builder.Property(r => r.Kitchen)
-                .IsRequired()
-                .HasMaxLength(MAX_STRING_LENGTH);
-
-            builder.Property(r => r.Raiting)
-                .IsRequired();
-
             builder.Property(r => r.StartWorkTime)
                 .IsRequired();
 
             builder.Property(r => r.EndWorkTime)
-                .IsRequired();
-
-            builder.Property(r => r.StartWorkTime)
                 .IsRequired();
         }
     }

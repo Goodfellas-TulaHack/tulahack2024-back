@@ -45,7 +45,7 @@ namespace TulaHack.DataAccess.Repositories
                         bookingEntity.Restaurant.UserId,
                         null,
                         bookingEntity.Restaurant.Address,
-                        bookingEntity.Restaurant.Kitchen,
+                        bookingEntity.Restaurant.Kitchens,
                         bookingEntity.Restaurant.MenuIds,
                         bookingEntity.Restaurant.Photos,
                         bookingEntity.Restaurant.Raiting,
@@ -64,14 +64,17 @@ namespace TulaHack.DataAccess.Repositories
             return booking.Value;
         }
 
-        public async Task<List<Booking>> GetByRestaurantId(Guid id)
+        public async Task<List<Booking>> GetByRestaurantId(Guid id, DateTime date = new DateTime())
         {
-            var bookingEntities = await _dbContext.Bookings
+            var query = _dbContext.Bookings
                 .AsNoTracking()
                 .Include(b => b.User)
                 .Include(b => b.Restaurant)
-                .Where(b => b.RestaurantId == id)
-                .ToListAsync();
+                .Where(b => b.RestaurantId == id);
+
+            if (date != new DateTime()) query.Where(b => DateTime.Parse(b.Date) == date);
+
+            var bookingEntities = await query.ToListAsync();
 
             var bookings = bookingEntities
                 .Select(b => Booking.Create(
@@ -96,7 +99,7 @@ namespace TulaHack.DataAccess.Repositories
                         b.Restaurant.UserId,
                         null,
                         b.Restaurant.Address,
-                        b.Restaurant.Kitchen,
+                        b.Restaurant.Kitchens,
                         b.Restaurant.MenuIds,
                         b.Restaurant.Photos,
                         b.Restaurant.Raiting,
@@ -114,6 +117,37 @@ namespace TulaHack.DataAccess.Repositories
                 .ToList();
 
             return bookings;
+        }
+
+        public async Task<Booking?> GetUserActive(Guid id)
+        {
+            var bookings = await _dbContext.Bookings
+                .AsNoTracking()
+                .Where(b => b.UserId == id)
+                .ToListAsync();
+
+            foreach (var booking in bookings)
+            {
+                if (DateOnly.Parse(booking.Date) == DateOnly.FromDateTime(DateTime.Now) &&
+                    TimeOnly.FromDateTime(DateTime.Now) >= TimeOnly.Parse(booking.StartTime) &&
+                    TimeOnly.FromDateTime(DateTime.Now) <= TimeOnly.Parse(booking.EndTime))
+                {
+                    var activeBooking = new Booking();
+                    activeBooking.Id = booking.Id;
+                    activeBooking.UserId = booking.UserId;
+                    activeBooking.RestaurantId = booking.RestaurantId;
+                    activeBooking.TableId = booking.TableId;
+                    activeBooking.Date = booking.Date;
+                    activeBooking.StartTime = booking.StartTime;
+                    activeBooking.EndTime = booking.EndTime;
+                    activeBooking.PersonsNumber = booking.PersonsNumber;
+                    activeBooking.Status = booking.Status;
+
+                    return activeBooking;
+                }
+            }
+
+            return null;
         }
 
         public async Task<Guid> Create(Booking booking)

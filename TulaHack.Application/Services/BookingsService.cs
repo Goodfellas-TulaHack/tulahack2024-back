@@ -3,11 +3,11 @@ using TulaHack.DataAccess.Repositories;
 
 namespace TulaHack.Application.Services
 {
-    public class BookingService
+    public class BookingsService
     {
         private readonly BookingRepository _bookingRepository;
 
-        public BookingService(BookingRepository usersRepository)
+        public BookingsService(BookingRepository usersRepository)
         {
             _bookingRepository = usersRepository;
         }
@@ -20,6 +20,16 @@ namespace TulaHack.Application.Services
         public async Task<List<Booking>> GetBookingsByRestaurantId(Guid id)
         {
             return await _bookingRepository.GetByRestaurantId(id);
+        }
+
+        public async Task<List<Booking>> GetBookingsByDate(Guid id, DateTime date)
+        {
+            return await _bookingRepository.GetByRestaurantId(id, date);
+        }
+
+        public async Task<Booking?> GetUserActiveBooking(Guid id)
+        {
+            return await _bookingRepository.GetUserActive(id);
         }
 
         public async Task<Guid> CreateBooking(Booking booking)

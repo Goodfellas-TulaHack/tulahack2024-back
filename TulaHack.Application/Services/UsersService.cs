@@ -57,7 +57,7 @@ namespace TulaHack.Application.Services
             return _jwtProvider.GenerateToken(user);
         }
 
-        public async Task<int?> AuthUser(string token)
+        public async Task<bool> AuthUser(string token)
         {
             return _jwtProvider.ValidateToken(token);
         }

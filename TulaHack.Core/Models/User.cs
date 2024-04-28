@@ -4,14 +4,14 @@ namespace TulaHack.Core.Models
 {
     public class User
     {
-        public Guid Id { get; }
-        public string Login { get; } = string.Empty;
-        public string Password { get; } = string.Empty;
-        public int Role { get; } = 0;
-        public string FirstName { get; } = string.Empty;
-        public string LastName { get; } = string.Empty;
-        public string MiddleName { get; } = string.Empty;
-        public string Phone { get; } = string.Empty;
+        public Guid Id { get; set; }
+        public string Login { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public int Role { get; set; } = 0;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string MiddleName { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
 
 
         public const int MAX_STRING_LENGTH = 50;
